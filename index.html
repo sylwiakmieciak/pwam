@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mój GPS</title>
+</head>
+<body>
+
+    <h1>Mój GPS Tracker</h1>
+
+    <p>Status: <span id="status">Nieaktywny</span></p>
+
+    <h3>Szerokość geograficzna:</h3>
+    <p id="lat">---</p>
+
+    <h3>Długość geograficzna:</h3>
+    <p id="lon">---</p>
+
+    <h3>Dokładność:</h3>
+    <p id="accuracy">---</p>
+
+    <button onclick="startGPS()">URUCHOM GPS</button>
+    <button onclick="stopGPS()">ZATRZYMAJ GPS</button>
+
+    <script>
+        let gpsID = null;
+
+        function startGPS() {
+            if (!navigator.geolocation) {
+                alert("Przeglądarka nie obsługuje GPS");
+                return;
+            }
+
+            if (gpsID !== null) return;
+
+            document.getElementById("status").innerText =
+                "Pobieranie lokalizacji...";
+
+            gpsID = navigator.geolocation.watchPosition(
+                function(position) {
+                    document.getElementById("lat").innerText =
+                        position.coords.latitude;
+
+                    document.getElementById("lon").innerText =
+                        position.coords.longitude;
+
+                    document.getElementById("accuracy").innerText =
+                        position.coords.accuracy + " m";
+
+                    document.getElementById("status").innerText =
+                        "GPS AKTYWNY";
+                },
+                function(error) {
+                    document.getElementById("status").innerText =
+                        "Błąd: " + error.message;
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 1000,
+                    timeout: 15000
+                }
+            );
+        }
+
+        function stopGPS() {
+            if (gpsID !== null) {
+                navigator.geolocation.clearWatch(gpsID);
+                gpsID = null;
+            }
+
+            document.getElementById("status").innerText =
+                "Zatrzymany";
+        }
+    </script>
+
+</body>
+</html>
+
+  
