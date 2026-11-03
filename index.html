@@ -23,6 +23,7 @@ body {
 }
 
 .container {
+    width: 100%;
     text-align: center;
 }
 
@@ -39,10 +40,12 @@ h1 {
     margin: 35px 0;
 }
 
-#status {
-    color: #777;
-    font-size: 13px;
+#dimensions {
+    color: #888;
+    font-family: monospace;
+    font-size: 14px;
 }
+
 </style>
 </head>
 
@@ -54,7 +57,7 @@ h1 {
 
     <div id="orientation">---</div>
 
-    <div id="status">WAITING</div>
+    <div id="dimensions">WAITING</div>
 
 </div>
 
@@ -62,38 +65,26 @@ h1 {
 
 function detectOrientation() {
 
-    let type = screen.orientation?.type;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    let isLandscape;
-
-    if (type) {
-        isLandscape = type.includes("landscape");
-    } else {
-        isLandscape = window.innerWidth > window.innerHeight;
-    }
+    const isLandscape = width > height;
 
     document.getElementById("orientation").innerText =
         isLandscape ? "POZIOM" : "PION";
 
-    document.getElementById("status").innerText =
-        "ACTIVE";
+    document.getElementById("dimensions").innerText =
+        "WIDTH: " + width + " | HEIGHT: " + height;
 }
-
-// Aktualizacja
-detectOrientation();
 
 window.addEventListener("resize", detectOrientation);
 window.addEventListener("orientationchange", detectOrientation);
 
 if (screen.orientation) {
-    screen.orientation.addEventListener(
-        "change",
-        detectOrientation
-    );
+    screen.orientation.addEventListener("change", detectOrientation);
 }
 
-// Dodatkowe sprawdzanie co 300 ms
-setInterval(detectOrientation, 300);
+detectOrientation();
 
 </script>
 
