@@ -24,28 +24,24 @@ body {
 
 .container {
     text-align: center;
-    width: 100%;
-    padding: 20px;
 }
 
 h1 {
-    font-size: 22px;
-    font-weight: 500;
-    letter-spacing: 2px;
+    font-size: 18px;
     color: #888;
+    letter-spacing: 2px;
 }
 
 #orientation {
     font-size: 48px;
     font-weight: bold;
-    margin-top: 35px;
     color: #38bdf8;
+    margin: 35px 0;
 }
 
 #status {
     color: #777;
     font-size: 13px;
-    margin-top: 25px;
 }
 </style>
 </head>
@@ -66,24 +62,38 @@ h1 {
 
 function detectOrientation() {
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    let type = screen.orientation?.type;
 
-    if (width > height) {
-        document.getElementById("orientation").innerText = "POZIOM";
+    let isLandscape;
+
+    if (type) {
+        isLandscape = type.includes("landscape");
     } else {
-        document.getElementById("orientation").innerText = "PION";
+        isLandscape = window.innerWidth > window.innerHeight;
     }
 
-    document.getElementById("status").innerText = "ACTIVE";
+    document.getElementById("orientation").innerText =
+        isLandscape ? "POZIOM" : "PION";
+
+    document.getElementById("status").innerText =
+        "ACTIVE";
 }
 
-// Pierwszy odczyt
+// Aktualizacja
 detectOrientation();
 
-// Aktualizacja po obróceniu ekranu
 window.addEventListener("resize", detectOrientation);
 window.addEventListener("orientationchange", detectOrientation);
+
+if (screen.orientation) {
+    screen.orientation.addEventListener(
+        "change",
+        detectOrientation
+    );
+}
+
+// Dodatkowe sprawdzanie co 300 ms
+setInterval(detectOrientation, 300);
 
 </script>
 
