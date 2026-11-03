@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vibrate</title>
+<title>Screen Orientation</title>
 
 <style>
 * {
@@ -23,39 +23,29 @@ body {
 }
 
 .container {
-    width: 100%;
-    max-width: 350px;
-    padding: 25px;
     text-align: center;
+    width: 100%;
+    padding: 20px;
 }
 
 h1 {
-    font-size: 25px;
+    font-size: 22px;
     font-weight: 500;
     letter-spacing: 2px;
-    margin-bottom: 35px;
+    color: #888;
 }
 
-button {
-    width: 100%;
-    padding: 20px;
-    border: none;
-    border-radius: 8px;
-    background: #38bdf8;
-    color: #111;
-    font-size: 17px;
+#orientation {
+    font-size: 48px;
     font-weight: bold;
-    cursor: pointer;
-}
-
-button:active {
-    background: #0ea5e9;
+    margin-top: 35px;
+    color: #38bdf8;
 }
 
 #status {
-    margin-top: 20px;
-    color: #888;
+    color: #777;
     font-size: 13px;
+    margin-top: 25px;
 }
 </style>
 </head>
@@ -64,31 +54,36 @@ button:active {
 
 <div class="container">
 
-    <h1>VIBRATE</h1>
+    <h1>SCREEN ORIENTATION</h1>
 
-    <button onclick="vibratePhone()">
-        VIBRATE 1 SECOND
-    </button>
+    <div id="orientation">---</div>
 
-    <div id="status">READY</div>
+    <div id="status">WAITING</div>
 
 </div>
 
 <script>
 
-function vibratePhone() {
+function detectOrientation() {
 
-    if (!("vibrate" in navigator)) {
-        document.getElementById("status").innerText =
-            "NOT SUPPORTED";
-        return;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    if (width > height) {
+        document.getElementById("orientation").innerText = "POZIOM";
+    } else {
+        document.getElementById("orientation").innerText = "PION";
     }
 
-    const result = navigator.vibrate(1000);
-
-    document.getElementById("status").innerText =
-        result ? "VIBRATION SENT" : "NOT AVAILABLE";
+    document.getElementById("status").innerText = "ACTIVE";
 }
+
+// Pierwszy odczyt
+detectOrientation();
+
+// Aktualizacja po obróceniu ekranu
+window.addEventListener("resize", detectOrientation);
+window.addEventListener("orientationchange", detectOrientation);
 
 </script>
 
