@@ -4,75 +4,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GPS & Device Motion Tracker</title>
+<title>Vibrate</title>
 
 <style>
-    body {
-        background: #101827;
-        color: white;
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        margin: 0;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .container {
-        max-width: 500px;
-        margin: auto;
-    }
+body {
+    margin: 0;
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    h1 {
-        color: #38bdf8;
-        text-align: center;
-    }
+.container {
+    width: 100%;
+    max-width: 350px;
+    padding: 25px;
+    text-align: center;
+}
 
-    h2 {
-        color: #38bdf8;
-        font-size: 19px;
-    }
+h1 {
+    font-size: 25px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    margin-bottom: 35px;
+}
 
-    .panel {
-        background: #1e293b;
-        padding: 18px;
-        margin: 15px 0;
-        border-radius: 12px;
-    }
+button {
+    width: 100%;
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    background: #38bdf8;
+    color: #111;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-    .value {
-        background: #334155;
-        padding: 12px;
-        border-radius: 8px;
-        margin: 8px 0;
-        overflow-wrap: anywhere;
-    }
+button:active {
+    background: #0ea5e9;
+}
 
-    .value span {
-        color: #4ade80;
-        font-weight: bold;
-    }
-
-    button {
-        width: 100%;
-        padding: 15px;
-        margin: 7px 0;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        color: white;
-    }
-
-    .start {
-        background: #16a34a;
-    }
-
-    .stop {
-        background: #dc2626;
-    }
-
-    #status {
-        text-align: center;
-        color: #facc15;
-    }
+#status {
+    margin-top: 20px;
+    color: #888;
+    font-size: 13px;
+}
 </style>
 </head>
 
@@ -80,238 +64,30 @@
 
 <div class="container">
 
-<h1>GPS & MOTION TRACKER</h1>
+    <h1>VIBRATE</h1>
 
-<p id="status">Oczekiwanie...</p>
+    <button onclick="vibratePhone()">
+        VIBRATE 1 SECOND
+    </button>
 
-<button class="start" onclick="startGPS()">
-URUCHOM GPS
-</button>
-
-<button class="start" onclick="startMotion()">
-URUCHOM DEVICE MOTION
-</button>
-
-<button class="stop" onclick="stopGPS()">
-ZATRZYMAJ GPS
-</button>
-
-<button class="stop" onclick="stopMotion()">
-ZATRZYMAJ DEVICE MOTION
-</button>
-
-<div class="panel">
-<h2>GPS LOCATION</h2>
-
-<div class="value">
-Latitude: <span id="lat">---</span>
-</div>
-
-<div class="value">
-Longitude: <span id="lon">---</span>
-</div>
-
-<div class="value">
-Accuracy: <span id="accuracy">---</span>
-</div>
-</div>
-
-<div class="panel">
-<h2>ACCELERATION (m/s²)</h2>
-
-<div class="value">
-X: <span id="accX">---</span>
-</div>
-
-<div class="value">
-Y: <span id="accY">---</span>
-</div>
-
-<div class="value">
-Z: <span id="accZ">---</span>
-</div>
-</div>
-
-<div class="panel">
-<h2>ACCELERATION INCLUDING GRAVITY (m/s²)</h2>
-
-<div class="value">
-X: <span id="gravX">---</span>
-</div>
-
-<div class="value">
-Y: <span id="gravY">---</span>
-</div>
-
-<div class="value">
-Z: <span id="gravZ">---</span>
-</div>
-</div>
-
-<div class="panel">
-<h2>ROTATION RATE (°/s)</h2>
-
-<div class="value">
-Alpha: <span id="alpha">---</span>
-</div>
-
-<div class="value">
-Beta: <span id="beta">---</span>
-</div>
-
-<div class="value">
-Gamma: <span id="gamma">---</span>
-</div>
-</div>
-
-<div class="panel">
-<h2>SENSOR INFORMATION</h2>
-
-<div class="value">
-Interval: <span id="interval">---</span> ms
-</div>
-
-<div class="value">
-Last update: <span id="motionTime">---</span>
-</div>
-</div>
+    <div id="status">READY</div>
 
 </div>
 
 <script>
 
-// GPS
+function vibratePhone() {
 
-let gpsID = null;
-
-function startGPS() {
-
-    if (!navigator.geolocation) {
-        alert("GPS nie jest obsługiwany");
+    if (!("vibrate" in navigator)) {
+        document.getElementById("status").innerText =
+            "NOT SUPPORTED";
         return;
     }
 
-    if (gpsID !== null) return;
-
-    gpsID = navigator.geolocation.watchPosition(
-        position => {
-
-            document.getElementById("lat").innerText =
-                position.coords.latitude.toFixed(7);
-
-            document.getElementById("lon").innerText =
-                position.coords.longitude.toFixed(7);
-
-            document.getElementById("accuracy").innerText =
-                position.coords.accuracy.toFixed(1) + " m";
-
-        },
-
-        error => {
-            alert("GPS error: " + error.message);
-            gpsID = null;
-        },
-
-        {
-            enableHighAccuracy: true,
-            maximumAge: 1000,
-            timeout: 15000
-        }
-    );
-}
-
-function stopGPS() {
-
-    if (gpsID !== null) {
-        navigator.geolocation.clearWatch(gpsID);
-        gpsID = null;
-    }
-}
-
-
-// DEVICE MOTION
-
-let motionActive = false;
-
-async function startMotion() {
-
-    if (!("DeviceMotionEvent" in window)) {
-        alert("Device Motion nie jest obsługiwany");
-        return;
-    }
-
-    // iOS wymaga zgody użytkownika
-    if (typeof DeviceMotionEvent.requestPermission === "function") {
-
-        try {
-            const permission =
-                await DeviceMotionEvent.requestPermission();
-
-            if (permission !== "granted") {
-                alert("Brak zgody na dostęp do czujników ruchu");
-                return;
-            }
-
-        } catch (error) {
-            alert("Nie udało się uzyskać zgody: " + error);
-            return;
-        }
-    }
-
-    if (motionActive) return;
-
-    window.addEventListener("devicemotion", handleMotion);
-    motionActive = true;
+    const result = navigator.vibrate(1000);
 
     document.getElementById("status").innerText =
-        "DEVICE MOTION AKTYWNY";
-}
-
-function handleMotion(event) {
-
-    const acc = event.acceleration;
-    const grav = event.accelerationIncludingGravity;
-    const rotation = event.rotationRate;
-
-    function display(id, value) {
-        document.getElementById(id).innerText =
-            value === null || value === undefined
-            ? "Niedostępne"
-            : Number(value).toFixed(3);
-    }
-
-    if (acc) {
-        display("accX", acc.x);
-        display("accY", acc.y);
-        display("accZ", acc.z);
-    }
-
-    if (grav) {
-        display("gravX", grav.x);
-        display("gravY", grav.y);
-        display("gravZ", grav.z);
-    }
-
-    if (rotation) {
-        display("alpha", rotation.alpha);
-        display("beta", rotation.beta);
-        display("gamma", rotation.gamma);
-    }
-
-    document.getElementById("interval").innerText =
-        event.interval ?? "Niedostępne";
-
-    document.getElementById("motionTime").innerText =
-        new Date().toLocaleTimeString();
-}
-
-function stopMotion() {
-
-    window.removeEventListener("devicemotion", handleMotion);
-    motionActive = false;
-
-    document.getElementById("status").innerText =
-        "DEVICE MOTION ZATRZYMANY";
+        result ? "VIBRATION SENT" : "NOT AVAILABLE";
 }
 
 </script>
